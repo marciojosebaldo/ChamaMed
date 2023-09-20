@@ -8,7 +8,7 @@ void setup() {
   pinMode(led, OUTPUT);
   pinode(bipe, OUTPUT);
   
-  digitalWrite(led, low);
+  digitalWrite(led, low);a
   digitalWrite(bipe, low);
 
   for (int i = 2; i <= 11; i++) {
@@ -26,14 +26,15 @@ void loop() {
   if(Serial.available()) {
     for (int i = 2; i <= 12; i++) {
       if(porta[i] == HIGH) {
+        bool porta[i] = Serial.readBool();
         
       }
-  }
+    }
 
-  for (int j = 22; j <= 53; j++) {
-    if(porta[j] == HIGH) {
+    for (int j = 22; j <= 53; j++) {
+      if(porta[j] == HIGH) {
+        bool porta[i] = Serial.readBool();
 
     }
   }
-
 }
