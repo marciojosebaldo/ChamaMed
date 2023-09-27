@@ -1,58 +1,50 @@
-int bipe = 12; // Pino exclusivo para o bipe
 int led = 13;  // Pino exclusivo para o LED
 
 const int jgPortas1 = 10;
 const int jgPortas2 = 32;
 
-bool portas1[10];
-bool portas2[32];
-
 void setup() {
   Serial.begin(9600);
   pinMode(led, OUTPUT);
 
-  for (int i = 0; i < sizeof(jgPortas1); i++) {
-    pinMode(portas1[i], INPUT);
+  for (int i = 0; i < jgPortas1; i++) {
+    pinMode(i, INPUT);
   }
 
-  for (int j = 0; j < sizeof(jgPortas2); j++) {
-    pinMode(portas2[j], INPUT);
+  for (int j = 0; j < jgPortas2; j++) {
+    pinMode(j, INPUT);
   }
 }
 
 void loop() {
   if (Serial.available()) {
-    for (int i = 0; i < 10; i++) {
-      if (portas1[i] == 1) {
+    for (int i = 0; i < jgPortas1; i++) {
+      int estadoPorta = digitalRead(i);
+      Serial.print("Porta 1, Pino ");
+      Serial.print(i);
+      Serial.print(": ");
+      Serial.println(estadoPorta);
+
+      if (estadoPorta == HIGH) {
         digitalWrite(led, HIGH);
         delay(200);
         digitalWrite(led, LOW);
         delay(200);
-
-        tone(bipe, 800);
-        delay(200);
-        noTone(bipe);
-        delay(200);
-      } else {
-        digitalWrite(led, LOW);
-        noTone(bipe);
       }
     }
 
-    for (int j = 0; j < 32; j++) {
-      if (portas2[j] == 1) {
+    for (int j = 0; j < jgPortas2; j++) {
+      int estadoPorta = digitalRead(j);
+      Serial.print("Porta 2, Pino ");
+      Serial.print(j);
+      Serial.print(": ");
+      Serial.println(estadoPorta);
+
+      if (estadoPorta == HIGH) {
         digitalWrite(led, HIGH);
         delay(200);
         digitalWrite(led, LOW);
         delay(200);
-
-        tone(bipe, 800);
-        delay(200);
-        noTone(bipe);
-        delay(200);
-      } else {
-        digitalWrite(led, LOW);
-        noTone(bipe);
       }
     }
   }

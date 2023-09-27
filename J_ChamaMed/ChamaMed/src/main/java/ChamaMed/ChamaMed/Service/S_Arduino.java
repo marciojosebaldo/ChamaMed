@@ -1,11 +1,9 @@
 package ChamaMed.ChamaMed.Service;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.fazecast.jSerialComm.SerialPort;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class S_Arduino {
 
@@ -17,21 +15,27 @@ public class S_Arduino {
         SerialPort serialPort = SerialPort.getCommPort(nomePortaArduino);
         serialPort.setBaudRate(baudRate);
 
-        if(!serialPort.openPort()) {
+        if (!serialPort.openPort()) {
             System.err.println("Falha ao conectar com a porta serial");
             return;
         }
 
         InputStream inputStream = serialPort.getInputStream();
-        boolean[] buffer = new boolean[42]; // São 42 portas no Arduino
-        List<Boolean> portasArduino = new ArrayList<>();
+        byte[] buffer = new byte[1024]; // Tamanho do buffer, ajuste conforme necessário
 
-        while(true) {
-
-            try
-
+        try {
+            while (true) {
+                int bytesRead = inputStream.read(buffer);
+                if (bytesRead > 0) {
+                    String dadosLidos = new String(buffer, 0, bytesRead);
+                    // Processar os dados recebidos (dadosLidos)
+                    System.out.println("Dados lidos: " + dadosLidos);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            serialPort.closePort();
         }
-
-
     }
 }
