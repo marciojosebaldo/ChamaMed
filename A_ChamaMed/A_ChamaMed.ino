@@ -1,50 +1,27 @@
-int led = 13;  // Pino exclusivo para o LED
+  int led = 13;  // Pino exclusivo para o LED
 
-const int jgPortas1 = 10;
-const int jgPortas2 = 32;
+  bool portas[] = {2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53};
+  int leituraPortas[52];
 
-void setup() {
+  void setup() {
+
   Serial.begin(9600);
+  
   pinMode(led, OUTPUT);
+  digitalWrite(led, LOW);
 
-  for (int i = 0; i < jgPortas1; i++) {
-    pinMode(i, INPUT);
-  }
-
-  for (int j = 0; j < jgPortas2; j++) {
-    pinMode(j, INPUT);
+  for (int i = 2; i < 53; i++) {
+    pinMode(portas[i], INPUT);
   }
 }
 
 void loop() {
-  if (Serial.available()) {
-    for (int i = 0; i < jgPortas1; i++) {
-      int estadoPorta = digitalRead(i);
-      Serial.print("Porta 1, Pino ");
-      Serial.print(i);
-      Serial.print(": ");
-      Serial.println(estadoPorta);
 
-      if (estadoPorta == HIGH) {
+  if(Serial.available()) {
+    for (int i = 2; i < 53; i++) {
+      if (portas[i] == HIGH) {
+        leituraPortas[i] = Serial.read();
         digitalWrite(led, HIGH);
-        delay(200);
-        digitalWrite(led, LOW);
-        delay(200);
-      }
-    }
-
-    for (int j = 0; j < jgPortas2; j++) {
-      int estadoPorta = digitalRead(j);
-      Serial.print("Porta 2, Pino ");
-      Serial.print(j);
-      Serial.print(": ");
-      Serial.println(estadoPorta);
-
-      if (estadoPorta == HIGH) {
-        digitalWrite(led, HIGH);
-        delay(200);
-        digitalWrite(led, LOW);
-        delay(200);
       }
     }
   }
