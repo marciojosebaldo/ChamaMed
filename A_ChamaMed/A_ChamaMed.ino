@@ -23,23 +23,15 @@ void setup() {
 
 void loop() {
 
-  if (Serial.available()) {
-    for (int i = 2; i < 12; i++) {
-      if (digitalRead(jogoPortas1[i]) == HIGH) {
-        leituraPortas1[i] = Serial.read();
-        digitalWrite(led, HIGH);
-      } else {
-        digitalWrite(led, LOW);
-      }
-    }
+  for (int i = 0; i < 11; i++) {
+    int estado = digitalRead(jogoPortas1[i]);
+    Serial.write(estado);
+    delay(10);
+  }
 
-    for (int i = 14; i < 53; i++) {
-      if (digitalRead(jogoPortas2[i] == HIGH)) {
-        leituraPortas2[i] = Serial.read();
-        digitalWrite(led, HIGH);
-      } else {
-        digitalWrite(led, LOW);
-      }
-    }
+  for (int i = 0; i < 40; i++) {
+    int estado = digitalRead(jogoPortas2[i]);
+    Serial.write(estado);
+    delay(10);
   }
 }
