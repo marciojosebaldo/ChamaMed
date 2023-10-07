@@ -1,5 +1,5 @@
 # ChamaMed
-Protótipo de gestão de solicitações de atendimento da enfermagem por parte de pacientes em leitos hospitalares.
+Protótipo de gestão de solicitações de atendimento da enfermagem por parte de pacientes internados em leitos hospitalares.
 
 Recursos:
 - Arduino Mega 2560;
