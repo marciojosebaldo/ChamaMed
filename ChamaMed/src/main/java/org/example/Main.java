@@ -53,17 +53,8 @@ public class Main {
                             }
 
                             memoriaBuffer = "";
-
-                        System.out.println("Porta 2: " + porta2);
-                        System.out.println("Porta 3: " + porta3);
-                        System.out.println("Porta 4: " + porta4);
-                        System.out.println("Porta 5: " + porta5);
-                        System.out.println("Porta 6: " + porta6);
-                        System.out.println();
-                        System.out.println();
                     }
                 }
-
                 Thread.sleep(500);
             }
         } catch (Exception e) {
