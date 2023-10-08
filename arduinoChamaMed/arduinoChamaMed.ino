@@ -5,8 +5,11 @@ int porta4 = 4;
 int porta5 = 5;
 int porta6 = 6;
 
-// Uso para identificação visual do nível lógico alto das portas
+// Identificação visual do nível lógico alto das portas
 int led = 13;
+
+// Aviso sonoro com bipe de placas-mães de PC
+int bipe = 22;
 
 void setup() {
   pinMode(porta2, INPUT);
@@ -16,6 +19,8 @@ void setup() {
   pinMode(porta6, INPUT);
 
   pinMode(led, OUTPUT);
+
+  pinMode(bipe, OUTPUT);
   
   Serial.begin(9600);
 }
@@ -69,9 +74,16 @@ void loop() {
 
   if (nivelPorta2 == HIGH || nivelPorta3 == HIGH || nivelPorta4 == HIGH || nivelPorta5 == HIGH || nivelPorta6 == HIGH) {
     digitalWrite(led, HIGH);
+    if(true) {
+      tone(bipe, 293);
+      delay(200);
+      noTone(bipe);
+    }
   } else {
     digitalWrite(led, LOW);
+    noTone(bipe);
   }
-  
-  delay(500);  // Atraso de 500 milissegundo entre as leituras
+
+  // Atraso de 500 milissegundos entre cada ciclo
+  delay(500);
 }
