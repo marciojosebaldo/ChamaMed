@@ -1,7 +1,3 @@
-// LEDs verde e vermelho não estão acendendo
-
-
-
 // Biblioteca para RFID e protocolo de comunicação
 #include <MFRC522.h>
 #include <SPI.h>
