@@ -1,3 +1,13 @@
+// Biblioteca para RFID e protocolo de comunicação
+#include <MFRC522.h>
+#include <SPI.h>
+
+// Pinos Reset e SDA
+#define SS_PIN 53
+#define RST_PIN 49
+MFRC522 mfrc522(SS_PIN, RST_PIN);
+char st[20];
+
 // Portas do Arduino que servirão de entrada do acionamento dos enfermeiras por parte do leito hospitalar
 int porta2 = 2;
 int porta3 = 3;
@@ -12,6 +22,9 @@ int led = 13;
 int bipe = 22;
 
 void setup() {
+  Serial.begin(9600);
+
+  // Parte dos botões para acionar os chamados das enfermeiras
   pinMode(porta2, INPUT);
   pinMode(porta3, INPUT);
   pinMode(porta4, INPUT);
@@ -22,10 +35,16 @@ void setup() {
 
   pinMode(bipe, OUTPUT);
   
-  Serial.begin(9600);
+  // Parte de leitura das tags RFID
+  SPI.begin();
+  mfrc522.PCD_Init();
+  
+  Serial.println("Aproxime o cartão para leitura: ");
+  Serial.println();  
 }
 
 void loop() {
+  // Parte do acionamento de botões por parte dos pacientes
   int nivelPorta2 = digitalRead(porta2);
   int nivelPorta3 = digitalRead(porta3);
   int nivelPorta4 = digitalRead(porta4);
@@ -86,4 +105,35 @@ void loop() {
 
   // Atraso de 500 milissegundos entre cada ciclo
   delay(500);
+
+  // Código de leitura das tags
+  if (! mfrc522.PICC_IsNewCardPresent()) 
+  {
+    return;
+  }
+  if ( ! mfrc522.PICC_ReadCardSerial()) 
+  {
+    return;
+  }
+  
+  Serial.print("Identificador da tag: ");
+  String conteudo= "";
+  byte letra;
+  for (byte i = 0; i < mfrc522.uid.size; i++) 
+  {
+     Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+     Serial.print(mfrc522.uid.uidByte[i], HEX);
+     conteudo.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+     conteudo.concat(String(mfrc522.uid.uidByte[i], HEX));
+  }
+  Serial.println();
+  Serial.print("Mensagem : ");
+  conteudo.toUpperCase();
+  
+  if (conteudo.substring(1) == "23 2D C1 04")
+  {
+    Serial.println("Chaveiro identificado!");
+    Serial.println();
+    delay(3000);     
+  }
 }
