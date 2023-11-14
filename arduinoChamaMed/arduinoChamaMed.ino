@@ -3,13 +3,16 @@
 #include <SPI.h>
 
 // Pinos Reset e SDA
-#define SS_PIN 53
-#define RST_PIN 49
-MFRC522 mfrc522(SS_PIN, RST_PIN);
-char st[20];
+#define SS_PIN 53 // Define o pino CS (Chip Selected)
+#define RST_PIN 49 // Define o pino Reset
+MFRC522 mfrc522(SS_PIN, RST_PIN); // Criada uma instância do objeto MRFC522 e utiliza os pinos definidos anteriormente como parâmetros
 
+// Pinos do Arduino para aviso visual da leitura das tags RFID
 int ledVerdePermissao = 40;
 int ledVermelhoProibido = 41;
+
+// Pino para baixar o nível lógico da placa quando o enfermeiro(a)/médico(a) atender o paciente
+int pinoNivelAltoRFID = 42;
 
 // Portas do Arduino que servirão de entrada do acionamento dos enfermeiras por parte do leito hospitalar
 int porta2 = 2;
@@ -27,7 +30,7 @@ int bipe = 22;
 void setup() {
   Serial.begin(9600);
 
-  // Parte dos botões para acionar os chamados das enfermeiras
+  // Parte dos botões para acionar os chamados da enfermaria
   pinMode(porta2, INPUT);
   pinMode(porta3, INPUT);
   pinMode(porta4, INPUT);
@@ -38,11 +41,15 @@ void setup() {
 
   pinMode(bipe, OUTPUT);
 
+  pinMode(pinoNivelAltoRFID, OUTPUT);
+
   // Parte de leitura das tags RFID
   pinMode(ledVerdePermissao, OUTPUT);
   pinMode(ledVermelhoProibido, OUTPUT);
 
+  // Inicia a comunicação SPI no Arduino. SPI é Serial Peripheral Interface que é um protocolo utilizado para comunicação entre dispositivos microcontroladores
   SPI.begin();
+  // É invocado o método PCD_Init que inicializa o leitor RFID para operação. Configura os registros internos do leitor RFID
   mfrc522.PCD_Init();
 
   Serial.println("Aproxime o cartão para leitura: ");
@@ -109,22 +116,23 @@ void loop() {
     noTone(bipe);
   }
 
-  // Atraso de 500 milissegundos entre cada ciclo
-  delay(500);
-
-  // Código de leitura das tags
-  if (! mfrc522.PICC_IsNewCardPresent()) 
-  {
-    return;
-  }
-  if ( ! mfrc522.PICC_ReadCardSerial()) 
+  // Código de leitura das tags. Se uma nova tag não for incluída, o código não será executado. Assim, evita operações desnecessárias
+  // Nesta linha, a função abaixo confere se há uma nova tag inserida. Retorna verdadeiro se nova tag for identificada
+  if (!mfrc522.PICC_IsNewCardPresent()) 
   {
     return;
   }
 
+  // Aqui, a função tenta ler os códigos inseridos na tag. Sua execução depende da função anterior acima
+  if (!mfrc522.PICC_ReadCardSerial()) 
+  {
+    return;
+  }
+
+  // Trecho do código que lida com a impressão da tag lida
   Serial.print("Identificador da tag: ");
-  String conteudo= "";
-  byte letra;
+  String conteudo = "";
+  
   for (byte i = 0; i < mfrc522.uid.size; i++) 
   {
      Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
@@ -132,21 +140,27 @@ void loop() {
      conteudo.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
      conteudo.concat(String(mfrc522.uid.uidByte[i], HEX));
   }
-  Serial.println();
-  Serial.print("Mensagem : ");
+
   conteudo.toUpperCase();
 
   if (conteudo.substring(1) == "23 2D C1 04") {
+    Serial.println("TAG identificada!");
     digitalWrite(ledVerdePermissao, HIGH);
     digitalWrite(ledVermelhoProibido, LOW);
-    Serial.println("TAG identificada!");
+    digitalWrite(pinoNivelAltoRFID, LOW);
     Serial.println();
     delay(3000);
     digitalWrite(ledVerdePermissao, LOW);
+    digitalWrite(pinoNivelAltoRFID, HIGH);
   } else {
+    Serial.println("TAG NÃO identificada!");
     digitalWrite(ledVerdePermissao, LOW);
     digitalWrite(ledVermelhoProibido, HIGH);
     delay(3000);
     digitalWrite(ledVermelhoProibido, LOW);
   }
+
+   // Atraso de 500 milissegundos entre cada ciclo
+  delay(500);
+  
 }
