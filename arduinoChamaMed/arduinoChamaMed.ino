@@ -47,6 +47,9 @@ void setup() {
   pinMode(ledVerdePermissao, OUTPUT);
   pinMode(ledVermelhoProibido, OUTPUT);
 
+  // Por padrão, permanece em nível lógico alto para permitir que o botão de chamada do leito esteja ativo
+  digitalWrite(pinoNivelAltoRFID, HIGH);
+
   // Inicia a comunicação SPI no Arduino. SPI é Serial Peripheral Interface que é um protocolo utilizado para comunicação entre dispositivos microcontroladores
   SPI.begin();
   // É invocado o método PCD_Init que inicializa o leitor RFID para operação. Configura os registros internos do leitor RFID
@@ -63,6 +66,13 @@ void loop() {
   int nivelPorta4 = digitalRead(porta4);
   int nivelPorta5 = digitalRead(porta5);
   int nivelPorta6 = digitalRead(porta6);
+
+  // Este código induz o programa a mandar os caracteres apenas quando haver mudança de estado das portas
+  static int estadoPortaAnterior2 = LOW;
+  static int estadoPortaAnterior3 = LOW;
+  static int estadoPortaAnterior4 = LOW;
+  static int estadoPortaAnterior5 = LOW;
+  static int estadoPortaAnterior6 = LOW;
 
   if (nivelPorta2 == LOW) {
     Serial.write("porta2Des\n");
@@ -144,6 +154,7 @@ void loop() {
   conteudo.toUpperCase();
 
   if (conteudo.substring(1) == "23 2D C1 04") {
+    Serial.println();
     Serial.println("TAG identificada!");
     digitalWrite(ledVerdePermissao, HIGH);
     digitalWrite(ledVermelhoProibido, LOW);
@@ -153,6 +164,7 @@ void loop() {
     digitalWrite(ledVerdePermissao, LOW);
     digitalWrite(pinoNivelAltoRFID, HIGH);
   } else {
+    Serial.println();
     Serial.println("TAG NÃO identificada!");
     digitalWrite(ledVerdePermissao, LOW);
     digitalWrite(ledVermelhoProibido, HIGH);
