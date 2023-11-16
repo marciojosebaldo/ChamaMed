@@ -110,11 +110,10 @@ void loop() {
 
   if (nivelPorta2 == HIGH || nivelPorta3 == HIGH || nivelPorta4 == HIGH || nivelPorta5 == HIGH || nivelPorta6 == HIGH || nivelPorta7 == HIGH) {
     digitalWrite(led, HIGH);
-    if(true) {
-      tone(bipe, 293);
-      delay(200);
-      noTone(bipe);
-    }
+    tone(bipe, 293);
+    delay(200);
+    noTone(bipe);
+    digitalWrite(led, LOW);
   } else {
     digitalWrite(led, LOW);
     noTone(bipe);
