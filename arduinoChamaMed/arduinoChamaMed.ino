@@ -20,6 +20,7 @@ int porta3 = 3;
 int porta4 = 4;
 int porta5 = 5;
 int porta6 = 6;
+int porta7 = 23;
 
 // Identificação visual do nível lógico alto das portas
 int led = 13;
@@ -36,6 +37,7 @@ void setup() {
   pinMode(porta4, INPUT);
   pinMode(porta5, INPUT);
   pinMode(porta6, INPUT);
+  pinMode(porta7, INPUT);
 
   pinMode(led, OUTPUT);
 
@@ -66,6 +68,7 @@ void loop() {
   int nivelPorta4 = digitalRead(porta4);
   int nivelPorta5 = digitalRead(porta5);
   int nivelPorta6 = digitalRead(porta6);
+  int nivelPorta7 = digitalRead(porta7);
 
   // Este código induz o programa a mandar os caracteres apenas quando haver mudança de estado das portas
   static int estadoPortaAnterior2 = LOW;
@@ -73,48 +76,39 @@ void loop() {
   static int estadoPortaAnterior4 = LOW;
   static int estadoPortaAnterior5 = LOW;
   static int estadoPortaAnterior6 = LOW;
+  static int estadoPortaAnterior7 = LOW;
 
-  if (nivelPorta2 == LOW) {
-    Serial.write("porta2Des\n");
+  if (nivelPorta2 != estadoPortaAnterior2) {
+    Serial.write(nivelPorta2 == HIGH ? "porta2Lig\n" : "porta2Des\n");
+    estadoPortaAnterior2 = nivelPorta2;
   }
 
-  if (nivelPorta2 == HIGH) {
-    Serial.write("porta2Lig\n");
+  if (nivelPorta3 != estadoPortaAnterior3) {
+    Serial.write(nivelPorta3 == HIGH ? "porta3Lig\n" : "porta3Des\n");
+    estadoPortaAnterior3 = nivelPorta3;
   }
 
-  if (nivelPorta3 == LOW) {
-    Serial.write("porta3Des\n");
+  if (nivelPorta4 != estadoPortaAnterior4) {
+    Serial.write(nivelPorta4 == HIGH ? "porta4Lig\n" : "porta4Des\n");
+    estadoPortaAnterior4 = nivelPorta4;
   }
 
-  if (nivelPorta3 == HIGH) {
-    Serial.write("porta3Lig\n");
+  if (nivelPorta5 != estadoPortaAnterior5) {
+    Serial.write(nivelPorta5 == HIGH ? "porta5Lig\n" : "porta5Des\n");
+    estadoPortaAnterior5 = nivelPorta5;
   }
 
-  if (nivelPorta4 == LOW) {
-    Serial.write("porta4Des\n");
+  if (nivelPorta6 != estadoPortaAnterior6) {
+    Serial.write(nivelPorta6 == HIGH ? "porta6Lig\n" : "porta6Des\n");
+    estadoPortaAnterior6 = nivelPorta6;
   }
 
-  if (nivelPorta4 == HIGH) {
-    Serial.write("porta4Lig\n");
+  if (nivelPorta7 != estadoPortaAnterior7) {
+    Serial.write(nivelPorta7 == HIGH ? "porta7Lig\n" : "porta7Des\n");
+    estadoPortaAnterior7 = nivelPorta7;
   }
 
-  if (nivelPorta5 == LOW) {
-    Serial.write("porta5Des\n");
-  }
-
-  if (nivelPorta5 == HIGH) {
-    Serial.write("porta5Lig\n");
-  }
-
-  if (nivelPorta6 == LOW) {
-    Serial.write("porta6Des\n");
-  }
-
-  if (nivelPorta6 == HIGH) {
-    Serial.write("porta6Lig\n");
-  }
-
-  if (nivelPorta2 == HIGH || nivelPorta3 == HIGH || nivelPorta4 == HIGH || nivelPorta5 == HIGH || nivelPorta6 == HIGH) {
+  if (nivelPorta2 == HIGH || nivelPorta3 == HIGH || nivelPorta4 == HIGH || nivelPorta5 == HIGH || nivelPorta6 == HIGH || nivelPorta7 == HIGH) {
     digitalWrite(led, HIGH);
     if(true) {
       tone(bipe, 293);
