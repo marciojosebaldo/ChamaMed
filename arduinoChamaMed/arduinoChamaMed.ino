@@ -153,7 +153,7 @@ void loop() {
     digitalWrite(ledVermelhoProibido, LOW);
     digitalWrite(pinoNivelAltoRFID, LOW);
     Serial.println();
-    delay(3000);
+    delay(1000);
     digitalWrite(ledVerdePermissao, LOW);
     digitalWrite(pinoNivelAltoRFID, HIGH);
   } else {
@@ -161,7 +161,7 @@ void loop() {
     Serial.println("TAG NÃO identificada!");
     digitalWrite(ledVerdePermissao, LOW);
     digitalWrite(ledVermelhoProibido, HIGH);
-    delay(3000);
+    delay(1000);
     digitalWrite(ledVermelhoProibido, LOW);
   }
 
